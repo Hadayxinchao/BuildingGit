@@ -43,7 +43,7 @@ when "ls-tree"
   uncompressed = Zlib::Inflate.inflate(compressed)
   if name_only
     uncompressed.split("\0")[1..-2].each do |entry|
-      puts entry.split(" ")[-1]
+      puts entry.split(" ")[-1].split("\n")[0]
     end
   else
     uncompressed.split("\0")[1..-2].each do |entry|
