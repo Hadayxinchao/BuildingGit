@@ -19,7 +19,7 @@ when "cat-file"
   print content
 when "hash-object"
   file = ARGV[2]
-  uncompressed_data = File.read(file) 
+  uncompressed_data = File.read(file)
   data = "blob #{uncompressed_data.bytesize}\0" + uncompressed_data
   sha1 = Digest::SHA1.hexdigest(data)
   puts sha1
@@ -42,11 +42,11 @@ when "ls-tree"
   compressed = File.read(path)
   uncompressed = Zlib::Inflate.inflate(compressed)
   if name_only
-    uncompressed.split("\0")[1..-1].each do |entry|
+    uncompressed.split("\0")[1..-2].each do |entry|
       puts entry.split(" ")[-1]
     end
   else
-    uncompressed.split("\0")[1..-1].each do |entry|
+    uncompressed.split("\0")[1..-2].each do |entry|
       puts entry
     end
   end
