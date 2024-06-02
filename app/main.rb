@@ -19,7 +19,7 @@ when "cat-file"
   print content
 when "hash-object"
   file = ARGV[2]
-  uncompressed_data = File.read(file)
+  uncompressed_data = File.read(file) 
   data = "blob #{uncompressed_data.bytesize}\0" + uncompressed_data
   sha1 = Digest::SHA1.hexdigest(data)
   puts sha1
@@ -29,6 +29,27 @@ when "hash-object"
   Dir.mkdir(path) unless Dir.exist?(path)
   file_path = "#{path}/#{filename}"
   File.write(file_path, compressed_data)
+when "ls-tree"
+  if ARGV[1] == "--name-only"
+    name_only = true
+    object = ARGV[2]
+  else
+    name_only = false
+    object = ARGV[1]
+  end
+
+  path = ".git/objects/#{object[0..1]}/#{object[2..-1]}"
+  compressed = File.read(path)
+  uncompressed = Zlib::Inflate.inflate(compressed)
+  if name_only
+    uncompressed.split("\0")[1..-1].each do |entry|
+      puts entry.split(" ")[-1]
+    end
+  else
+    uncompressed.split("\0")[1..-1].each do |entry|
+      puts entry
+    end
+  end
 else
   raise RuntimeError.new("Unknown command #{command}")
 end
